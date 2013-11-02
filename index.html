@@ -50,16 +50,16 @@
       objs.head = head;
       
       var mouth = paper.rect(0, 0, 100, 50);
-      // head.push(mouth);
+      head.push(mouth);
       //mouth.transform('t100,150');
       mouth.attr({fill: 'white', stroke: 'none'});
       objs.mouth = mouth;
       
-      var leye = paper.circle(0, 0, 25);
-      var reye = paper.circle(0, 0, 25);
+      var leye = paper.circle(50, 80, 25);
+      var reye = paper.circle(150, 80, 25);
       leye.attr({fill: 'white', stroke: 'none'});
       reye.attr({fill: 'white', stroke: 'none'});
-      // head.push(leye, reye);
+      head.push(leye, reye);
       //leye.transform('t75,125');
       //reye.transform('t125,125');
       objs.leye = leye;
@@ -173,12 +173,12 @@
         var rcoors = coors[1];
         
         if (lcoors) {
-          // objs.leye.transform('s' + lcoors.width / 100 + ',' + lcoors.height / 100);
-          objs.leye.transform('t' + (lcoors.left + lcoors.width / 2) + ',' + (lcoors.top + lcoors.height / 2) + 's' + lcoors.width / 100 + ',' + lcoors.height / 100)
+          objs.leye.transform('s' + lcoors.width / 100 + ',' + lcoors.height / 100);
+          //objs.leye.transform('t' + (lcoors.left + lcoors.width / 2) + ',' + (lcoors.top + lcoors.height / 2) + 's' + lcoors.width / 100 + ',' + lcoors.height / 100)
         }
         if (rcoors) {
-          // objs.reye.transform('s' + rcoors.width / 100 + ',' + rcoors.height / 100);
-          objs.reye.transform('t' + (rcoors.left + rcoors.width / 2) + ',' + (rcoors.top + rcoors.height / 2) + 's' + rcoors.width / 100 + ',' + rcoors.height / 100)
+          objs.reye.transform('s' + rcoors.width / 100 + ',' + rcoors.height / 100);
+          //objs.reye.transform('t' + (rcoors.left + rcoors.width / 2) + ',' + (rcoors.top + rcoors.height / 2) + 's' + rcoors.width / 100 + ',' + rcoors.height / 100)
         }
       });
     }
@@ -187,7 +187,7 @@
 </head>
 
 <body>
-	<h1>FACE-O-SAURUS</h1>
   <video id="video" style="position: absolute; left: 0px; top: 0px;" width="800" height="600"></video>
+  <h1 style="position: absolute; right: 50px; top: 10px; font-size: 100px; font-family: Comic Sans MS">FACE-O-SAURUS</h1>
 </body>
 </html>
