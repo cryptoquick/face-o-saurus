@@ -15,7 +15,7 @@
   
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="lib/jquery.objectdetect.js"></script>
-  <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+  <script src="lib/rtcpeerconnection.bundle.js"></script>
   <script src="lib/raphael.js"></script>
   
 	<script>
@@ -187,8 +187,10 @@
       },
       /// 4. fist
            function (hcoors) {
-             if (hcoors.length)
+             if (hcoors.length) {
+               $('#roar').get(0).play();
                console.error('ROAR!!!', hcoors);
+             }
            });
     }
 
@@ -197,7 +199,7 @@
 
 <body bgcolor="tomato">
   <video id="video" style="position: absolute; left: 0px; top: 0px;" width="800" height="600"></video>
-  <audio id="roar" src=""><audio>
+  <audio id="roar" src="assets/DinoRoar.mp3"><audio>
   <h1 style="position: absolute; right: 50px; top: 10px; font-size: 100px; font-family: Comic Sans MS">FACE-O-SAURUS</h1>
 </body>
 </html>
