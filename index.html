@@ -15,7 +15,7 @@
   
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="lib/jquery.objectdetect.js"></script>
-  <script src="lib/rtcpeerconnection.bundle.js"></script>
+  <script src="lib/peer.js"></script>
   <script src="lib/raphael.js"></script>
   
 	<script>
@@ -186,20 +186,33 @@
         }
       },
       /// 4. fist
-           function (hcoors) {
-             if (hcoors.length) {
-               $('#roar').get(0).play();
-               console.error('ROAR!!!', hcoors);
-             }
-           });
+      function (hcoors) {
+        if (hcoors.length) {
+          $('#roar').get(0).play();
+          console.error('ROAR!!!', hcoors);
+        }
+      });
     }
-
+    
+    var peer = new Peer({key: 'tvbygfiljbhb0529'});
+    
+    peer.on('open', function(id) {
+      console.info('My peer ID is: ' + id);
+      window.location.hash = id;
+    });
+    
+    peer.on('connection', function(conn) {
+      conn.on('data', function (data)  {
+        if(data === 'true')
+          console.error('STOMP!!!!');
+      });
+    });
 </script>
 </head>
 
 <body bgcolor="tomato">
   <video id="video" style="position: absolute; left: 0px; top: 0px;" width="800" height="600"></video>
-  <audio id="roar" src="assets/DinoRoar.mp3"><audio>
+  <audio id="roar" src="assets/DinoRoar.mp3"></audio>
   <h1 style="position: absolute; right: 50px; top: 10px; font-size: 100px; font-family: Comic Sans MS">FACE-O-SAURUS</h1>
 </body>
 </html>
