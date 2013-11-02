@@ -55,10 +55,12 @@
       mouth.attr({fill: 'white', stroke: 'none'});
       objs.mouth = mouth;
       
-      var leye = paper.circle(50, 80, 25);
-      var reye = paper.circle(150, 80, 25);
-      leye.attr({fill: 'white', stroke: 'none'});
-      reye.attr({fill: 'white', stroke: 'none'});
+      var leye = paper.set();
+      leye.push(paper.circle(50, 70, 25).attr({fill: 'white', stroke: 'none'}));
+      leye.push(paper.circle(50, 80, 10).attr({fill: 'black', stroke: 'none'}));
+      var reye = paper.set();
+      reye.push(paper.circle(150, 70, 25).attr({fill: 'white', stroke: 'none'}));
+      reye.push(paper.circle(150, 60, 10).attr({fill: 'black', stroke: 'none'}));
       head.push(leye, reye);
       //leye.transform('t75,125');
       //reye.transform('t125,125');
@@ -150,7 +152,7 @@
         var coor = coors[0];
         
         if (coor) {
-          objs.head.transform('t' + (coor.left + coor.width / 2) + ',' + (coor.top + coor.height / 2) + 's' + coor.width / 100 + ',' + coor.height / 100)
+          objs.head.transform('T' + (coor.left + coor.width / 2) + ',' + (coor.top + coor.height / 2) + 'S' + coor.width / 100 + ',' + coor.height / 100)
           //.after(function () {
             setTimeout(animate, 100);
           //});
@@ -173,6 +175,7 @@
         var rcoors = coors[1];
         
         if (lcoors) {
+          console.log('lcoors', lcoors);
           objs.leye.transform('s' + lcoors.width / 100 + ',' + lcoors.height / 100);
           //objs.leye.transform('t' + (lcoors.left + lcoors.width / 2) + ',' + (lcoors.top + lcoors.height / 2) + 's' + lcoors.width / 100 + ',' + lcoors.height / 100)
         }
