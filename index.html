@@ -20,28 +20,13 @@
 	<script>
     ///////
     
-    var rate = 100; // (ms)
+    var rate = 1e2; // (ms)
     
     ///////
     var objs = [];
     $(function () {
       var paper = Raphael(0, 0, 800, 600);
       
-      /*   for (var f = 0; f < 4; f++) {
-        var face = draw.group().attr('class', 'face');
-        var f1 = face.circle(25);
-        var f2 = face.circle(25);
-        var f3 = face.circle(25);
-        var f4 = face.circle(25);
-        f1.center(-100,   0);
-        f2.center( 100,   0);
-        f3.center( -75, 100);
-        f4.center(  75, 100);
-        
-        faces.push(face);
-      }*/
-      
-      //var face = draw.path('M-100,0 L-75,100 L75,100 L100,0 z');
       var head = paper.set();
       head.push(paper.path('M0,100 L30,200 L170,200 L200,100 z')); // nose
       head.push(paper.path('M25,100 L75,0 L125,0 L175,100 z')); // forehead
@@ -49,18 +34,19 @@
       head.attr('stroke', 'none');
       objs.head = head;
       
-      var mouth = paper.rect(0, 0, 100, 50);
+      var mouth = paper.set();
+      mouth.push(paper.rect(50, 130, 100, 40).attr({fill: '#fff', stroke: 'none'}));
+      mouth.push(paper.path('M50,130 l20,40, l20,-40 l20,40 l20,-40 l20,40').attr({fill: 'none', stroke: '#000'}));
       head.push(mouth);
       //mouth.transform('t100,150');
-      mouth.attr({fill: 'white', stroke: 'none'});
       objs.mouth = mouth;
       
       var leye = paper.set();
-      leye.push(paper.circle(50, 70, 25).attr({fill: 'white', stroke: 'none'}));
-      leye.push(paper.circle(50, 80, 10).attr({fill: 'black', stroke: 'none'}));
+      leye.push(paper.circle(50, 70, 25).attr({fill: '#fff', stroke: 'none'}));
+      leye.push(paper.circle(50, 80, 10).attr({fill: '#000', stroke: 'none'}));
       var reye = paper.set();
-      reye.push(paper.circle(150, 70, 25).attr({fill: 'white', stroke: 'none'}));
-      reye.push(paper.circle(150, 60, 10).attr({fill: 'black', stroke: 'none'}));
+      reye.push(paper.circle(150, 70, 25).attr({fill: '#fff', stroke: 'none'}));
+      reye.push(paper.circle(150, 60, 10).attr({fill: '#000', stroke: 'none'}));
       head.push(leye, reye);
       //leye.transform('t75,125');
       //reye.transform('t125,125');
@@ -176,11 +162,14 @@
         
         if (lcoors) {
           console.log('lcoors', lcoors);
-          objs.leye.transform('s' + lcoors.width / 100 + ',' + lcoors.height / 100);
+          //  objs.leye.transform('S' + lcoors.width / 100 + ',' + lcoors.height / 100);
           //objs.leye.transform('t' + (lcoors.left + lcoors.width / 2) + ',' + (lcoors.top + lcoors.height / 2) + 's' + lcoors.width / 100 + ',' + lcoors.height / 100)
         }
         if (rcoors) {
-          objs.reye.transform('s' + rcoors.width / 100 + ',' + rcoors.height / 100);
+          console.log('lcoors', lcoors);
+          //  objs.reye.transform('R' + Math.floor(Math.random() * 360).toString());
+          console.log(Math.floor(Math.random() * 360));
+          //  objs.reye.transform('S' + rcoors.width / 100 + ',' + rcoors.height / 100 + 'R' + Math.floor(Math.random() * 360));
           //objs.reye.transform('t' + (rcoors.left + rcoors.width / 2) + ',' + (rcoors.top + rcoors.height / 2) + 's' + rcoors.width / 100 + ',' + rcoors.height / 100)
         }
       });
