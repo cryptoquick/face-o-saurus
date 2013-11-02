@@ -61,8 +61,9 @@
       }*/
       
       //var face = draw.path('M-100,0 L-75,100 L75,100 L100,0 z');
-      var face = draw.path('M0,100 L50,200 L150,200 L200,100 z');
-      face.fill('brown');
+      var face = draw.group();
+      var nose = face.path('M0,100 L30,200 L170,200 L200,100 z');
+      nose.fill('brown');
       
       // face = draw.group().attr('class', 'face');
       faces = [face];
@@ -137,7 +138,7 @@
           var coor = coors[i];
           
           if (coor) {
-            console.log(coor.left + coor.width / 2, coor.top + coor.height / 2);
+            console.log(coor.left, coor.top, coor.width / 100, coor.height / 100);
             
             //   face.show();
             face.animate(rate).move(coor.left, coor.top).scale(coor.width / 100, coor.height / 100).after(function () {
