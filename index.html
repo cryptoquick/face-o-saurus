@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>FACE-O-SAURUS</title>
+	
+	<script src="lib/compatibility.js"></script>
+	<script src="lib/smoother.js"></script>
+	
+	<script src="lib/objectdetect.js"></script>
+	<script src="lib/objectdetect.frontalface.js"></script>
+	
+	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+	<script src="lib/jquery.objectdetect.js"></script>
+  <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+  <script src="lib/svg.js"></script>
+  
+  <style>
+
+.link {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node {
+  fill: #000;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.node.a { fill: #1f77b4; }
+.node.b { fill: #ff7f0e; }
+.node.c { fill: #2ca02c; }
+
+</style>
+	<script>
+    ///////
+    
+    var rate = 200; // (ms)
+    
+    ///////
+    var objs = [];
+    $(function () {
+      var draw = SVG('canvas');
+      draw.size(800, 600);
+      
+      var faces = [];
+      
+      /*   for (var f = 0; f < 4; f++) {
+        var face = draw.group().attr('class', 'face');
+        var f1 = face.circle(25);
+        var f2 = face.circle(25);
+        var f3 = face.circle(25);
+        var f4 = face.circle(25);
+        f1.center(-100,   0);
+        f2.center( 100,   0);
+        f3.center( -75, 100);
+        f4.center(  75, 100);
+        
+        faces.push(face);
+      }*/
+      
+      //var face = draw.path('M-100,0 L-75,100 L75,100 L100,0 z');
+      var face = draw.path('M0,100 L50,200 L150,200 L200,100 z');
+      face.fill('brown');
+      
+      // face = draw.group().attr('class', 'face');
+      faces = [face];
+      
+      objs.faces = faces;
+      //  objs.f1 = f1, objs.f2 = f2, objs.f3 = f3, objs.f4 = f4;
+    });
+    
+    /////// object detect //////////
+    
+    var smoother = new Smoother(0.85, [0, 0, 0, 0, 0]);
+    
+    $(window).load(function() {
+      
+      var video = $("#video").get(0);
+      try {
+        compatibility.getUserMedia({video: true}, function(stream) {
+          try {
+            video.src = compatibility.URL.createObjectURL(stream);
+          } catch (error) {
+            video.src = stream;
+          }
+          video.play();
+          //compatibility.requestAnimationFrame(tick);
+          animate();
+        }, function (error) {
+          alert("WebRTC not available");
+        });
+      } catch (error) {
+        alert(error);
+      }
+      
+      tick = function (cb) {
+        //  compatibility.requestAnimationFrame(tick);
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+          $(video).objectdetect("all", {scaleMin: 3, scaleFactor: 1.1, classifier: objectdetect.frontalface}, function(coords) {
+            console.log(coords[0]);
+            coors = coords.map(function (face) {
+              return {
+                  left:    ~~(face[0] + face[2] * 1.0/8),
+                  top:     ~~(face[1] + face[3] * 0.8/8),
+                  width:   ~~(face[2] * 6/8),
+                  height:  ~~(face[3] * 6/8)
+                };
+            });
+            cb(coors);
+            //if (coors.length)
+              //updateGraphics();
+            //else
+            // console.log('no face, lol');
+          });
+        }
+        else {
+          setTimeout(function () { animate() }, rate);
+        }
+      }
+      
+      $("#list img").click(function () {
+        $("#glasses").attr("src", $(this).attr("src"));
+      });
+    });
+    
+    function animate () {
+      tick(function (coors) {
+        if (!coors.length) {
+          setTimeout(function () { animate() }, rate);
+          return;
+        }
+        
+        for (var i = 0; i < objs.faces.length; i++) {
+          var face = objs.faces[i];
+          var coor = coors[i];
+          
+          if (coor) {
+            console.log(coor.left + coor.width / 2, coor.top + coor.height / 2);
+            
+            //   face.show();
+            face.animate(rate).move(coor.left, coor.top).scale(coor.width / 100, coor.height / 100).after(function () {
+               animate();
+            });
+          }
+          else {
+            // face.hide();
+          }
+        }
+      });
+    }
+
+</script>
+</head>
+
+<body>
+	<h1>FACE-O-SAURUS</h1>
+  <video id="video" style="position: absolute; left: 0px; top: 0px;" width="800" height="600"></video>
+  <div id="canvas" style="position: absolute; left: 0px; top: 0px;"></div>
+<!--	<img id="glasses" src="img/sunglasses_0.png" style="position:absolute; display:none"> -->
+</body>
+</html>
