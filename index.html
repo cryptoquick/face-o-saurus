@@ -9,7 +9,9 @@
 	
 	<script src="lib/objectdetect.js"></script>
 	<script src="lib/objectdetect.frontalface.js"></script>
-	
+	<script src="lib/objectdetect.mouth.js"></script>
+  <script src="lib/objectdetect.eye.js"></script>
+  
 	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 	<script src="lib/jquery.objectdetect.js"></script>
   <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
@@ -36,7 +38,7 @@
 	<script>
     ///////
     
-    var rate = 200; // (ms)
+    var rate = 100; // (ms)
     
     ///////
     var objs = [];
@@ -63,12 +65,23 @@
       //var face = draw.path('M-100,0 L-75,100 L75,100 L100,0 z');
       var face = draw.group();
       var nose = face.path('M0,100 L30,200 L170,200 L200,100 z');
-      nose.fill('brown');
+      var head = face.path('M25,100 L75,0 L125,0 L175,100 z');
+      nose.fill('green');
+      head.fill('green');
       
       // face = draw.group().attr('class', 'face');
-      faces = [face];
+      // faces = [face];
+      objs.face = face;
+      //  objs.face.mouth = face.group();
       
-      objs.faces = faces;
+      objs.mouth = objs.face.rect(100, 50);
+      objs.mouth.center(100, 150);
+      objs.mouth.fill('white');
+      
+      objs.leye = face.circle(25);
+      objs.reye = face.circle(25);
+      objs.leye.attr('fill', 'white');
+      objs.reye.attr('fill', 'white');
       //  objs.f1 = f1, objs.f2 = f2, objs.f3 = f3, objs.f4 = f4;
     });
     
@@ -96,11 +109,10 @@
         alert(error);
       }
       
-      tick = function (cb) {
+      tick = function (facecb, mouthcb, eyescb) {
         //  compatibility.requestAnimationFrame(tick);
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
           $(video).objectdetect("all", {scaleMin: 3, scaleFactor: 1.1, classifier: objectdetect.frontalface}, function(coords) {
-            console.log(coords[0]);
             coors = coords.map(function (face) {
               return {
                   left:    ~~(face[0] + face[2] * 1.0/8),
@@ -109,11 +121,31 @@
                   height:  ~~(face[3] * 6/8)
                 };
             });
-            cb(coors);
-            //if (coors.length)
-              //updateGraphics();
-            //else
-            // console.log('no face, lol');
+            facecb(coors);
+          });
+          $(video).objectdetect("all", {scaleMin: 3, scaleFactor: 1.1, classifier: objectdetect.mouth}, function(coords) {
+            //  console.log('mouth', coords);
+            mcoors = coords.map(function (m) {
+              return {
+                  left:    ~~(m[0]),
+                  top:     ~~(m[1]),
+                  width:   ~~(m[2]),
+                  height:  ~~(m[3])
+                };
+            });
+            mouthcb(mcoors);
+          });
+          $(video).objectdetect("all", {scaleMin: 3, scaleFactor: 1.1, classifier: objectdetect.eye}, function(coords) {
+            // console.log('eyes', coords);
+            ecoors = coords.map(function (m) {
+              return {
+                  left:    ~~(m[0]),
+                  top:     ~~(m[1]),
+                  width:   ~~(m[2]),
+                  height:  ~~(m[3])
+                };
+            });
+            eyescb(ecoors);
           });
         }
         else {
@@ -127,27 +159,50 @@
     });
     
     function animate () {
+      /// 1. face
       tick(function (coors) {
         if (!coors.length) {
           setTimeout(function () { animate() }, rate);
           return;
         }
         
-        for (var i = 0; i < objs.faces.length; i++) {
-          var face = objs.faces[i];
-          var coor = coors[i];
+        var face = objs.face;
+        var coor = coors[0];
+        
+        if (coor) {
+          // console.log(coor.left, coor.top, coor.width / 100, coor.height / 100);
           
-          if (coor) {
-            console.log(coor.left, coor.top, coor.width / 100, coor.height / 100);
-            
-            //   face.show();
-            face.animate(rate).move(coor.left, coor.top).scale(coor.width / 100, coor.height / 100).after(function () {
-               animate();
-            });
-          }
-          else {
-            // face.hide();
-          }
+          //   face.show();
+          objs.face.animate(rate).move(coor.left, coor.top).scale(coor.width / 100, coor.height / 100).after(function () {
+            animate();
+          });
+        }
+        else {
+          // face.hide();
+        }
+      },
+      /// 2. mouth
+      function (coors) {
+        var mouth = coors[0];
+        
+        if (mouth) {
+          objs.mouth.animate(rate).scale(mouth.width / 100, mouth.height / 100)
+        }
+        // else
+          // objs.face.mouth.animate(rate).scale(0,0);
+      },
+      /// 3. eyes
+      function (coors) {
+        console.log(coors);
+        
+        var lcoors = coors[0];
+        var rcoors = coors[1];
+        
+        if (lcoors) {
+          objs.leye.animate(rate).center(lcoors.left - objs.face.bbox().x, lcoors.top - objs.face.bbox().y).scale(lcoors.width / 100, lcoors.height / 100);
+        }
+        if (rcoors) {
+          objs.reye.animate(rate).center(rcoors.left - objs.face.bbox().x, rcoors.top - objs.face.bbox().y).scale(rcoors.width / 100, rcoors.height / 100);
         }
       });
     }
