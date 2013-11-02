@@ -82,6 +82,8 @@
       objs.reye = face.circle(25);
       objs.leye.attr('fill', 'white');
       objs.reye.attr('fill', 'white');
+      objs.leye.center( 75, 125);
+      objs.reye.center(125, 125);
       //  objs.f1 = f1, objs.f2 = f2, objs.f3 = f3, objs.f4 = f4;
     });
     
@@ -199,10 +201,10 @@
         var rcoors = coors[1];
         
         if (lcoors) {
-          objs.leye.animate(rate).center(lcoors.left - objs.face.bbox().x, lcoors.top - objs.face.bbox().y).scale(lcoors.width / 100, lcoors.height / 100);
+          objs.leye.animate(rate).scale(lcoors.width / 100, lcoors.height / 100);
         }
         if (rcoors) {
-          objs.reye.animate(rate).center(rcoors.left - objs.face.bbox().x, rcoors.top - objs.face.bbox().y).scale(rcoors.width / 100, rcoors.height / 100);
+          objs.reye.animate(rate).scale(rcoors.width / 100, rcoors.height / 100);
         }
       });
     }
